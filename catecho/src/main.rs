@@ -5,10 +5,11 @@ use clap::Parser;
 #[command(version, about = "An echo-like command adds cat meows")]
 struct Args {
     #[arg(required = true, help = "Input text")]
-    text: String,
+    text: Vec<String>,
 }
 
 fn main() {
     let args = Args::parse();
-    println!("{}", args.text);
+    let text = args.text;
+    println!("{}{}", text.join(" "), " MEOW");
 }
