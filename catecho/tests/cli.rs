@@ -5,7 +5,7 @@ use predicates::prelude::*;
 #[test]
 fn runs() {
     let mut cmd: Command = Command::cargo_bin("catecho").unwrap();
-    cmd.arg("Hello").assert().success().stdout("Hello\n");
+    cmd.arg("Hello").assert().success().stdout("Hello MEOW\n");
 }
 
 // 引数なしで実行してUSAGEが標準エラーに出力されることを確認
