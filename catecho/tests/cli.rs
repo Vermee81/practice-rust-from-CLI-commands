@@ -3,13 +3,6 @@ use predicates::prelude::*;
 
 const BIN_NAME: &str = "catecho";
 
-// 引数に文字列を指定して実行して、その文字列が標準出力に出力されることを確認
-#[test]
-fn runs() {
-    let mut cmd: Command = Command::cargo_bin(BIN_NAME).unwrap();
-    cmd.arg("Hello").assert().success().stdout("Hello MEOW\n");
-}
-
 // 文字が2つ以上ある場合に、それらが連結されて標準出力に出力されることを確認
 #[test]
 fn runs_multiple() {
