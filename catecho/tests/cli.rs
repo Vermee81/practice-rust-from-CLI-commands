@@ -8,6 +8,13 @@ fn runs() {
     cmd.arg("Hello").assert().success().stdout("Hello MEOW\n");
 }
 
+// 文字が2つ以上ある場合に、それらが連結されて標準出力に出力されることを確認
+#[test]
+fn runs_multiple() {
+    let mut cmd: Command = Command::cargo_bin("catecho").unwrap();
+    cmd.arg("Hello").arg("World").assert().success().stdout("Hello World MEOW\n");
+}
+
 // 引数なしで実行してUSAGEが標準エラーに出力されることを確認
 #[test]
 fn dies_no_args() {
