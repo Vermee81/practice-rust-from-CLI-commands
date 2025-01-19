@@ -36,7 +36,7 @@ fn run(args: &[&str], expected_file: &str) -> Result<()> {
 
 #[test]
 fn empty() -> Result<()> {
-    run(&[EMPTY_FILE], "tests/expected/empty.txt.out")    
+    run(&[EMPTY_FILE], "tests/expected/empty.txt.out")
 }
 
 #[test]
@@ -45,7 +45,7 @@ fn empty_b() -> Result<()> {
 }
 
 #[test]
-fn empty_n() -> Result<()>{
+fn empty_n() -> Result<()> {
     run(&["-n", EMPTY_FILE], "tests/expected/empty.txt.out")
 }
 
@@ -66,30 +66,48 @@ fn one_line_n() -> Result<()> {
 
 #[test]
 fn multiple_lines() -> Result<()> {
-    run(&[MULTIPLE_LINES_FILE], "tests/expected/multiple-lines.txt.out")
+    run(
+        &[MULTIPLE_LINES_FILE],
+        "tests/expected/multiple-lines.txt.out",
+    )
 }
 
 #[test]
 fn multiple_lines_b() -> Result<()> {
-    run(&["-b", MULTIPLE_LINES_FILE], "tests/expected/multiple-lines.txt.b.out")
+    run(
+        &["-b", MULTIPLE_LINES_FILE],
+        "tests/expected/multiple-lines.txt.b.out",
+    )
 }
 
 #[test]
 fn multiple_lines_n() -> Result<()> {
-    run(&["-n", MULTIPLE_LINES_FILE], "tests/expected/multiple-lines.txt.n.out")
+    run(
+        &["-n", MULTIPLE_LINES_FILE],
+        "tests/expected/multiple-lines.txt.n.out",
+    )
 }
 
 #[test]
 fn multiple_with_blanks() -> Result<()> {
-    run(&[MULTIPLE_WITH_BLANKS_FILE], "tests/expected/multiple-with-blanks.txt.out")
+    run(
+        &[MULTIPLE_WITH_BLANKS_FILE],
+        "tests/expected/multiple-with-blanks.txt.out",
+    )
 }
 
 #[test]
 fn multiple_with_blanks_b() -> Result<()> {
-    run(&["-b", MULTIPLE_WITH_BLANKS_FILE], "tests/expected/multiple-with-blanks.txt.b.out")
+    run(
+        &["-b", MULTIPLE_WITH_BLANKS_FILE],
+        "tests/expected/multiple-with-blanks.txt.b.out",
+    )
 }
 
 #[test]
 fn multiple_with_blanks_n() -> Result<()> {
-    run(&["-n", MULTIPLE_WITH_BLANKS_FILE], "tests/expected/multiple-with-blanks.txt.n.out")
+    run(
+        &["-n", MULTIPLE_WITH_BLANKS_FILE],
+        "tests/expected/multiple-with-blanks.txt.n.out",
+    )
 }
