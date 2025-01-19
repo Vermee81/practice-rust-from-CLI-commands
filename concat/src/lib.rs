@@ -29,13 +29,6 @@ struct Args {
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
-fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
-    match filename {
-        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
-        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
-    }
-}
-
 pub fn get_args() -> MyResult<Config> {
     let args = Args::parse();
     let files = args.files;
@@ -45,6 +38,28 @@ pub fn get_args() -> MyResult<Config> {
         number_lines: args.number_lines,
         number_nonblank_lines: args.number_nonblank_lines,
     })
+}
+
+pub fn run(config: Config) -> MyResult<()> {
+    for filename in &config.files {
+        match open(&filename) {
+            Err(err) => eprintln!("Failed to open {filename}: {err}"),
+            Ok(file) => {
+                if let Err(err) = process_file(file, &config) {
+                    eprintln!("Failed to process {filename}: {err}");
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+fn process_file(file: Box<dyn BufRead>, config: &Config) -> MyResult<()> {
+    match (config.number_lines, config.number_nonblank_lines) {
+        (true, _) => process_numbered_lines(file),
+        (_, true) => process_numbered_nonblank_lines(file),
+        _ => process_plain_lines(file),
+    }
 }
 
 fn process_numbered_lines(file: Box<dyn BufRead>) -> MyResult<()> {
@@ -77,24 +92,9 @@ fn process_plain_lines(file: Box<dyn BufRead>) -> MyResult<()> {
     Ok(())
 }
 
-fn process_file(file: Box<dyn BufRead>, config: &Config) -> MyResult<()> {
-    match (config.number_lines, config.number_nonblank_lines) {
-        (true, _) => process_numbered_lines(file),
-        (_, true) => process_numbered_nonblank_lines(file),
-        _ => process_plain_lines(file),
+fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
     }
-}
-
-pub fn run(config: Config) -> MyResult<()> {
-    for filename in &config.files {
-        match open(&filename) {
-            Err(err) => eprintln!("Failed to open {filename}: {err}"),
-            Ok(file) => {
-                if let Err(err) = process_file(file, &config){
-                    eprintln!("Failed to process {filename}: {err}");
-                }
-           }
-        }
-    }
-    Ok(())
 }
