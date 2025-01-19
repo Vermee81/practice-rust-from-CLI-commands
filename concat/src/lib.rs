@@ -47,32 +47,53 @@ pub fn get_args() -> MyResult<Config> {
     })
 }
 
+fn process_numbered_lines(file: Box<dyn BufRead>) -> MyResult<()> {
+    for (line_num, line) in file.lines().enumerate() {
+        let line = line?;
+        println!("{:6}\t{}", line_num + 1, line);
+    }
+    Ok(())
+}
+
+fn process_numbered_nonblank_lines(file: Box<dyn BufRead>) -> MyResult<()> {
+    let mut last_num = 0;
+    for line in file.lines() {
+        let line = line?;
+        if line.is_empty() {
+            println!();
+            continue;
+        }
+        last_num += 1;
+        println!("{:6}\t{}", last_num, line);
+    }
+    Ok(())
+}
+
+fn process_plain_lines(file: Box<dyn BufRead>) -> MyResult<()> {
+    for line in file.lines() {
+        let line = line?;
+        println!("{line}");
+    }
+    Ok(())
+}
+
+fn process_file(file: Box<dyn BufRead>, config: &Config) -> MyResult<()> {
+    match (config.number_lines, config.number_nonblank_lines) {
+        (true, _) => process_numbered_lines(file),
+        (_, true) => process_numbered_nonblank_lines(file),
+        _ => process_plain_lines(file),
+    }
+}
+
 pub fn run(config: Config) -> MyResult<()> {
-    for filename in config.files {
+    for filename in &config.files {
         match open(&filename) {
             Err(err) => eprintln!("Failed to open {filename}: {err}"),
             Ok(file) => {
-                let mut last_num = 0;
-                for (line_num, line) in file.lines().enumerate() {
-                    let line = line?;
-                    if config.number_lines {
-                        println!("{:6}\t{}", line_num + 1, line);
-                        continue;
-                    }
-
-                    if config.number_nonblank_lines {
-                        if line.is_empty() {
-                            println!();
-                            continue;
-                        }
-                        last_num += 1;
-                        println!("{:6}\t{}", last_num, line);
-                        continue;
-                    }
-
-                    println!("{line}");
+                if let Err(err) = process_file(file, &config){
+                    eprintln!("Failed to process {filename}: {err}");
                 }
-            }
+           }
         }
     }
     Ok(())
